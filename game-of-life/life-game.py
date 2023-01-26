@@ -6,6 +6,8 @@ import time
 
 
 DIR = [(0,1), (1,0), (-1,0), (0,-1), (-1,-1), (1,1), (-1,1), (1,-1)]
+
+#Cool color palettes
 RED_P = [(205, 92, 92),(240, 128, 128), (250, 128, 114), (233, 150, 122),(233, 150, 122),(233, 150, 122), (255, 0, 0),(178, 34, 34),(139, 0, 0)]
 PINK_P = [(139, 0, 0), (255, 182, 193),(255, 105, 180), (255, 20, 147),(199, 21, 133), (219, 112, 147)]
 ORANGE_P = [(255, 160, 122), (255, 127, 80), (255, 99, 71), (255, 69, 0), (255, 140, 0), (255, 165, 0)]
@@ -17,23 +19,22 @@ def pick_color(bg_color):
     """ 
     Create a color with the rgb agreement 
     """
-    palette = ORANGE_P
+    palette = BLUE_P
     color = bg_color
     index = random.randint(0, len(palette)-1)
     while color == bg_color:
         color = palette[index]
     return color
 
-
+#Init game
 pygame.init()
 
-neighbors = 0
-
-bg_color = (255, 255, 255)
-
+#Board dimentions
 width, height = 1000, 1000
 screen = pygame.display.set_mode((height, width))
 
+#Background color
+bg_color = (255, 255, 255)
 screen.fill(bg_color)
 
 cell_countX, cell_countY = 50, 50
@@ -41,21 +42,21 @@ cell_countX, cell_countY = 50, 50
 cell_dimW = width / cell_countX
 cell_dimH = height / cell_countY
 
+
 game_state = np.zeros((cell_countX, cell_countY))
-
-
 pause = True
 
 while True:
 
+    #Copy board for not overwrite thw original
     new_game_state = np.copy(game_state)
 
     screen.fill(bg_color)
     time.sleep(0.2)
 
-    #Mouse events
-    ev = pygame.event.get()
-    for event in ev:
+    #Events detection
+    events = pygame.event.get()
+    for event in events:
         if event.type == pygame.KEYDOWN:
             pause = not pause
 
@@ -67,7 +68,7 @@ while True:
             new_game_state[cellX, cellY] = not mouse_click[2]
             
    
-
+    #Game logic
     for y in range(0,cell_countX):
         for x in range(0, cell_countY):
             
@@ -91,11 +92,12 @@ while True:
                     ((x+1) * cell_dimW, (y+1) * cell_dimH),
                     ((x) * cell_dimW, (y+1) * cell_dimH ) ]
 
-            #Drawing
+            #Drawing board
             if new_game_state[x,y] == 0:
                 pygame.draw.polygon(screen, (220, 220, 220), pol, width=1)
             else:
                 pygame.draw.polygon(screen, pick_color(bg_color), pol, width=0)
-        
+
+    #Update and show game 
     game_state = np.copy(new_game_state)
     pygame.display.flip() 
