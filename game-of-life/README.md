@@ -8,4 +8,4 @@ The Game of Life, also known simply as Life, is a cellular automaton devised by 
     3- All other live cells die in the next generation. Similarly, all other dead cells stay dead.
 
 
-![Simulation controller example](https://github.com/sheyls/Conway-game-of-life/main/conway.png)
+![Example](https://github.com/sheyls/Conway-game-of-life/main/conway.png)
