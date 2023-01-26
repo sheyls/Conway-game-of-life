@@ -5,7 +5,7 @@ from sklearn import neighbors
 import time
 
 
-
+DIR = [(0,1), (1,0), (-1,0), (0,-1), (-1,-1), (1,1), (-1,1), (1,-1)]
 RED_P = [(205, 92, 92),(240, 128, 128), (250, 128, 114), (233, 150, 122),(233, 150, 122),(233, 150, 122), (255, 0, 0),(178, 34, 34),(139, 0, 0)]
 PINK_P = [(139, 0, 0), (255, 182, 193),(255, 105, 180), (255, 20, 147),(199, 21, 133), (219, 112, 147)]
 ORANGE_P = [(255, 160, 122), (255, 127, 80), (255, 99, 71), (255, 69, 0), (255, 140, 0), (255, 165, 0)]
@@ -17,7 +17,7 @@ def pick_color(bg_color):
     """ 
     Create a color with the rgb agreement 
     """
-    palette = BLUE_P
+    palette = ORANGE_P
     color = bg_color
     index = random.randint(0, len(palette)-1)
     while color == bg_color:
@@ -26,6 +26,8 @@ def pick_color(bg_color):
 
 
 pygame.init()
+
+neighbors = 0
 
 bg_color = (255, 255, 255)
 
@@ -41,13 +43,8 @@ cell_dimH = height / cell_countY
 
 game_state = np.zeros((cell_countX, cell_countY))
 
-game_state[21, 21] = 1
-game_state[22, 22] = 1
-game_state[22, 23] = 1
-game_state[21, 23] = 1
-game_state[20, 23] = 1
 
-pause = False
+pause = True
 
 while True:
 
@@ -69,22 +66,20 @@ while True:
             cellX, cellY = int(np.floor(posX / cell_dimW)), int(np.floor(posY / cell_dimH))
             new_game_state[cellX, cellY] = not mouse_click[2]
             
-    
+   
 
     for y in range(0,cell_countX):
         for x in range(0, cell_countY):
             
             if not pause:
-
-                neighbors = game_state[(x-1) % cell_countX, (y-1) % cell_countY] + \
-                            game_state[(x) % cell_countX, (y-1) % cell_countY] + \
-                            game_state[(x+1) % cell_countX, (y-1) % cell_countY] + \
-                            game_state[(x-1) % cell_countX, (y) % cell_countY] + \
-                            game_state[(x+1) % cell_countX, (y) % cell_countY] + \
-                            game_state[(x-1) % cell_countX, (y+1) % cell_countY] + \
-                            game_state[(x) % cell_countX, (y+1) % cell_countY] + \
-                            game_state[(x+1) % cell_countX, (y+1) % cell_countY]
                 
+                neighbors = game_state[(x + DIR[0][0]) % cell_countX, (y + DIR[0][1]) % cell_countY] 
+
+                for d in range(1, len(DIR)):
+                   
+                    neighbors = neighbors + game_state[(x + DIR[d][0]) % cell_countX, (y + DIR[d][1]) % cell_countY] 
+                    
+        
                 if game_state[x,y] == 0 and neighbors == 3:
                     new_game_state[x,y] = 1
 
